@@ -26,6 +26,6 @@ import react from '@vitejs/plugin-react';
  * Dlatego base ustawiamy warunkowo w zależności od trybu.
  */
 export default defineConfig(({ mode }) => ({
-  base: mode === 'production' ? '/quiz16/' : '/',
+  base: mode === 'production' ? '/quiz15/' : '/',
   plugins: [react()],
 }))
