@@ -131,7 +131,21 @@ function createMockWeights() {
   ];
 }
 
+console.log('📦 WEIGHTS SAMPLE (first 5):', weightsData.weights.slice(0, 5));
 
+const uniqueWeightQuestions = new Set(weightsData.weights.map(w => w.questionId));
+console.log('📌 Weight questionIds:', Array.from(uniqueWeightQuestions));
+
+const answerQuestions = Object.keys(answers);
+console.log('🧩 Answer questionIds:', answerQuestions);
+
+const missingWeightsForQuestions = answerQuestions.filter(
+  q => !uniqueWeightQuestions.has(q)
+);
+
+if (missingWeightsForQuestions.length > 0) {
+  console.error('❌ NO WEIGHTS FOR QUESTIONS:', missingWeightsForQuestions);
+}
 /**
  * 🔥 GŁÓWNA FUNKCJA - POPRAWIONA
  */
@@ -155,9 +169,25 @@ if (!weightsData.weights || weightsData.weights.length === 0) {
   const matchedWeights: Array<any> = []; // Do debugowania
   
   Object.entries(answers).forEach(([questionId, answerText]) => {
-    const weight = weightsData.weights.find(
-      w => w.questionId === questionId && w.answer === answerText
-    );
+const possibleWeights = weightsData.weights.filter(
+  w => w.questionId === questionId
+);
+
+if (possibleWeights.length === 0) {
+  console.error(`❌ No weights at all for questionId="${questionId}"`);
+} else {
+  console.log(`🔍 Possible answers for ${questionId}:`, possibleWeights.map(w => w.answer));
+}
+
+const weight = possibleWeights.find(
+  w => w.answer === answerText
+);
+
+if (!weight) {
+  console.error(`❌ Answer mismatch for "${questionId}"`);
+  console.error('➡️ User answer:', `"${answerText}"`);
+  console.error('➡️ Expected one of:', possibleWeights.map(w => `"${w.answer}"`));
+}
     
     if (weight) {
       console.log(`✓ Match: ${questionId} = "${answerText}" → ${weight.riskPoints} pts`);
